@@ -21,7 +21,14 @@ Features that NextJS provides:
 - NextJS does pre rendering using build pre rendering - getStaticProps() or server-side rendering
 - this is seo friendly as the fetched data is initially present in the html page
 
-## getStaticProps()
+## RENDERING
+
+Next.js has two forms of pre-rendering: Static Generation and Server-side Rendering. The difference is in when it generates the HTML for a page.
+
+- Static Generation (Recommended): The HTML is generated at build time and will be reused on each request.
+- Server-side Rendering: The HTML is generated on each request.
+
+### getStaticProps()
 ```
 export async function getStaticProps() { 
   // pre-renders the data during the build process
@@ -34,7 +41,7 @@ export async function getStaticProps() {
 }
 ```
 
-## using for fetching data acc to params.id
+### using for fetching data acc to params.id
 
 we can't access the params id using the useRouter hook as it works only inside the first level of component function
 ```
@@ -55,7 +62,7 @@ export async function getStaticProps(context) {
 }
 ```
 
-## Server side rendering using getSerevrProps()
+### Server side rendering using getServerProps()
 These are rendered in server side only so can be used to hide credentials as well. </br>
 Renders only once
 
@@ -65,8 +72,9 @@ export async function getServerProps(context){
    const res = contxt.res;
    
   props: {
-    
+    // passed to the page as props
   }
+  // no revalidation
 }
 ```
 
@@ -76,3 +84,15 @@ NextJs acts as a full stack framework, allowing us to create backend api routes 
 - each file/folder name will act as api route endpoints as <b>/api/endpoint</b>
 - These are rendered within server only and never passed to client machine
 
+## Head MetaDATA for SEO
+- using the Head component present in 'next/head'
+```
+<Head>
+  <title>Delhi MeetUps</title>
+  <meta name='description' content='This site is the best site around the globe'/>
+</Head>
+```
+- we can do this is every single page by wrapping the code inside fragmentsx
+
+## DEPLOYMENT
+Deploy using Vercel, the creators of Next.js
