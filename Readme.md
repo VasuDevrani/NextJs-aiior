@@ -15,6 +15,7 @@ Features that NextJS provides:
 - Link tag works with href comes under 'next/link'
 
 ## Working with fetching data
+- all below stuff can be done using react practices as well
 - in normal react data is usually fetched using a useEffect i.e. in the first cycle all variables are assigned memory then data is fetched and stored.
 - this can be improved by generating this data as pre-rendered
 - NextJS does pre rendering using build pre rendering - getStaticProps() or server-side rendering
@@ -31,9 +32,18 @@ export async function getStaticProps() {
     revalidate: 1 //number of seconds for refetch cycle
   }
 }
+```
 
-//using for fetching data acc to params.id
-//we can't access the params id using the useRouter hook as it works only inside the first level of component function
+## using for fetching data acc to params.id
+
+we can't access the params id using the useRouter hook as it works only inside the first level of component function
+```
+export async function getStaticPath(){
+  fallback: false,
+  paths: [
+    //all params as object
+  ]
+}
 
 export async function getStaticProps(context) { 
   const id = context.params.id;
@@ -46,6 +56,9 @@ export async function getStaticProps(context) {
 ```
 
 ## Server side rendering using getSerevrProps()
+These are rendered in server side only so can be used to hide credentials as well. </br>
+Renders only once
+
 ```
 export async function getServerProps(context){
    const req = context.req;
@@ -56,3 +69,10 @@ export async function getServerProps(context){
   }
 }
 ```
+
+## BACKEND Integration
+NextJs acts as a full stack framework, allowing us to create backend api routes within the same frontend code base </br>
+- Just create a 'api' folder inside the pages
+- each file/folder name will act as api route endpoints as <b>/api/endpoint</b>
+- These are rendered within server only and never passed to client machine
+
