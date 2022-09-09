@@ -35,7 +35,9 @@ export async function getStaticProps() {
   // for dynamic changes in fetched data use revalidate
   
   props: {
-    meetUps: .....
+    meetUps: {
+     meets: data
+    }
     revalidate: 1 //number of seconds for refetch cycle
   }
 }
@@ -77,6 +79,15 @@ export async function getServerProps(context){
   // no revalidation
 }
 ```
+
+### Exploring static generation
+- npm run build
+- got to the 'next' folder created as a result of build command
+- checkout 'server' folder and you will get the data pre-rendered in the html files and json files that contains the pre rendered fetched data.
+
+### Exploitation of data during website rendering
+- If the site route is approached directly, then the server serves pre-rendered html page
+- if the site route is approched from another route, then json & html files are served
 
 ## BACKEND Integration
 NextJs acts as a full stack framework, allowing us to create backend api routes within the same frontend code base </br>
