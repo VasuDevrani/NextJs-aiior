@@ -15,6 +15,45 @@ Features that NextJS provides:
     ```
 - Link tag works with href comes under 'next/link'
 
+## LAYOUTS
+- These can be used to add stale components (components common to all pages like Navbar, Footer) to the application
+- They makes use of component wrapping and _app.js file
+- There are two ways of doing this: 
+```
+// in _app.js
+function MyApp({ Component, pageProps }) {
+  return (
+  <>
+    <Navbar/>
+      <Component {...pageProps} />
+    <Footer/>
+  </>
+  );
+}
+```
+Or, the other way of creating a wrapper 'Layout'
+```
+// wrapper layout
+function Layout(props) {
+  return (
+    <div>
+      <MainNavigation />
+      <main className={classes.main}>{props.children}</main>
+    </div>
+  );
+}
+
+//_app.js
+function MyApp({ Component, pageProps }) {
+  return (
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  );
+}
+
+```
+
 ## Working with fetching data
 - all below stuff can be done using react practices as well
 - in normal react data is usually fetched using a useEffect i.e. in the first cycle all variables are assigned memory then data is fetched and stored.
@@ -188,13 +227,57 @@ NextJs acts as a full stack framework, allowing us to create backend api routes 
 
 ## Head MetaDATA for SEO
 - using the Head component present in 'next/head'
+- can use dynamic values as well, as its simple jsx
+- can add this head component to each page or, directly to the _app.js file as layouts
 ```
-<Head>
-  <title>Delhi MeetUps</title>
-  <meta name='description' content='This site is the best site around the globe'/>
-</Head>
+return(
+<>
+  <Head>
+    <title>Delhi MeetUps</title>
+    <meta name='description' content='This site is the best site around the globe'/>
+  </Head>
+  <div>
+      <h1>Hello</h1>
+  </div>
+</>
+)
 ```
 - we can do this is every single page by wrapping the code inside fragments
+
+### Image component
+- genrally images with html img tag loads with complete size and then fits to the container in which they are placed
+- this inital large download makes the webpage slow
+- Next Image component eradicates this problem by downloading the image with its exact size specified
+- It also comes with fetures of lazy loading, certain props like responsive, intrinsic, etc.
+- A special prop ``` placeholder = blur ``` gives a shadow effect before the image loads
+```
+<div style={{width: '30vw'}}>
+  <Image alt="Mountains" src={img} layout="responsive" width={200} height={300} placeholder='blur'/>
+</div>
+ ```
+ 
+ ## TypeScript support
+ ```
+ import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  // ...
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  // ...
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // ...
+}
+
+import type { AppProps } from 'next/app'
+
+export default function MyApp({ Component, pageProps }: AppProps) {
+  return <Component {...pageProps} />
+}
+ ```
 
 ## DEPLOYMENT
 Deploy using Vercel, the creators of Next.js
