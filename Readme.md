@@ -1,4 +1,5 @@
 ## Tracking whatever I learn in NextJS
+<img src="https://images.ctfassets.net/23aumh6u8s0i/c04wENP3FnbevwdWzrePs/1e2739fa6d0aa5192cf89599e009da4e/nextjs" width='300px'/>
 
 Features that NextJS provides:
 - File routing
@@ -64,15 +65,15 @@ export async function getStaticProps(context) {
 }
 ```
 
-### Server side rendering using getServerProps()
-These are rendered in server side only so can be used to hide credentials as well. </br>
+### Server side rendering using getServerSideProps()
+These are rendered in server side only on every request so can be used to hide credentials as well. </br>
 Renders only once
 
 ```
-export async function getServerProps(context){
+export async function getServerSideProps(context){
    const req = context.req;
    const res = contxt.res;
-   
+   // or, context.params.id
   props: {
     // passed to the page as props
   }
@@ -127,6 +128,57 @@ export async function getStaticPaths() {
 
 ### INCREMENTAL STATIC GENERATION
 
+Problems with static generation: 
+- The build time is proportional to the number of pages, which could be large for large websites
+- The data once rendered during the build time is stale data, and not subjected to changes as no useEffect kinda thing is involved.
+- It is good for sites like blog or news or personal sites, but not for ecommerce or dynamic sites
+</br>
+Incremental Static Regeneration (ISR) can be done using revalidate param. </br>
+The process involves:
+
+- getting the pre rendered requested page
+- change in the data in server side
+- new req made becoz of revalidate lets say after 10 sec
+- the req will reflect no change and it shows prev cached state
+- another new req will reflect the changes in the browser 
+
+### shallow routing
+change the route url without actual routing
+```
+router.push('/events?category=sports', undefined, {shallow: true})
+```
+
+### Client side fetch + SSR - filtering results
+- many times we need to provide a feature that filters the content. Like breaking news, sports news in the news list content
+- This can be done in two ways
+  - using SSR with dynamic pages, not effective
+  - using SSR and client side fetching
+  
+  ```
+     export default function Post({ news }){
+        const handleFilter = () => {
+          //  initiates when a filter button is clicked
+          //  update the news list by making new fetch req or filter method
+          //  change the route for subsequent req
+
+          router.push('/events?category=sports', undefined, {shallow: true})
+        }
+
+         return (
+              .....
+         )
+     }
+     
+     export async function getServerSideProps(context){
+         const { category } = context.query;
+         // fetch new list as per query
+         return {
+            props:{
+              news: data
+            }
+         }
+     }
+  ```
 
 ## BACKEND Integration
 NextJs acts as a full stack framework, allowing us to create backend api routes within the same frontend code base </br>
@@ -142,7 +194,12 @@ NextJs acts as a full stack framework, allowing us to create backend api routes 
   <meta name='description' content='This site is the best site around the globe'/>
 </Head>
 ```
-- we can do this is every single page by wrapping the code inside fragmentsx
+- we can do this is every single page by wrapping the code inside fragments
 
 ## DEPLOYMENT
 Deploy using Vercel, the creators of Next.js
+
+## RESOURCES
+- https://nextjs.org/docs - NEXTJS docs 
+- https://www.youtube.com/watch?v=MFuwkrseXVE&ab_channel=Academind - intro to NEXTJS
+- https://www.youtube.com/playlist?list=PLC3y8-rFHvwgC9mj0qv972IO5DmD-H0ZH - Codevolution YouTube playlist
