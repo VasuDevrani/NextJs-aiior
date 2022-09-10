@@ -89,6 +89,45 @@ export async function getServerProps(context){
 - If the site route is approached directly, then the server serves pre-rendered html page
 - if the site route is approched from another route, then json & html files are served
 
+## getStaticPaths
+```
+export async function getStaticPaths() {
+  const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const data = await res.json();
+
+  const paths = data.map((item) => {
+    return {
+      params: {
+        postId: `${item.id}`,
+      },
+    };
+  });
+
+  return {
+    paths,
+    fallback: false,
+  };
+}
+```
+- defines the paths for dynamic SSGs.
+- contains a fallback param, which can be true, false, or blocking
+- If fallback is true => will create new req for new paths, and add new statically generated page, data to the static part.
+  - a if counter statement is needed
+  - ```
+    if(router.fallback)
+    {
+      return (
+        <h1> loading... </h1>
+      )
+    }
+  - for the very first req, a fallback html page (here its loading) is returned and a newly pre-rendered html page with JSON data is being pre-rendered in the server.
+  - for any subsequent req, this page will act like other pages, that is pre-rendered from the very start, no new req
+- If fallback is false => any other path other than those mentioned in the getStaticPaths will not be rendered and a 404 page would be served
+- If fallback is 'blocking' => the page will load slow and the process would be same as fallback true, no need of if on loading is slow
+
+### INCREMENTAL STATIC GENERATION
+
+
 ## BACKEND Integration
 NextJs acts as a full stack framework, allowing us to create backend api routes within the same frontend code base </br>
 - Just create a 'api' folder inside the pages
